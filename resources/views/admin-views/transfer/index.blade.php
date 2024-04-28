@@ -20,6 +20,7 @@
                                 <option value="" selected disabled>{{translate('Select Type')}}</option>
                                 <option value="1">{{translate('Agent')}}</option>
                                 <option value="2">{{translate('Customer')}}</option>
+                                <option value="4">{{translate('Organization')}}</option>
                             </select>
                         </div>
                     </div>

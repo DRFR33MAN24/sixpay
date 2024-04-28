@@ -1,4 +1,4 @@
-@extends('layouts.merchant.app')
+@extends('layouts.organization.app')
 
 @section('title', translate('dashboard'))
 
@@ -11,7 +11,7 @@
         <div class="page-header pb-2">
             <h1 class="page-header-title text-primary mb-1">{{translate('welcome')}} , {{auth('user')->user()->f_name}}
                 .</h1>
-            <p>{{ translate('welcome_to') }} {{Helpers::get_business_settings('business_name')}} {{translate('merchant_panel')}}</p>
+            <p>{{ translate('welcome_to') }} {{Helpers::get_business_settings('business_name')}} {{translate('organization_panel')}}</p>
         </div>
 
         <div class="card card-body mb-3">
@@ -23,7 +23,7 @@
             </div>
 
             <div class="row g-2" id="order_stats">
-                @include('merchant-views.partials._stats', ['data'=>$balance])
+                @include('organization-views.partials._stats', ['data'=>$balance])
             </div>
         </div>
 
@@ -126,7 +126,7 @@
 @push('script_2')
     <script>
         $("#withdrawal_method").on('change', function (event) {
-            location.href = "{{route('merchant.dashboard')}}" + '?withdrawal_method=' + $(this).val();
+            location.href = "{{route('organization.dashboard')}}" + '?withdrawal_method=' + $(this).val();
         })
     </script>
 

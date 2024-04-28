@@ -1,4 +1,4 @@
-@extends('layouts.merchant.app')
+@extends('layouts.organization.app')
 
 @section('title','Profile Settings')
 
@@ -11,7 +11,7 @@
                 </div>
 
                 <div class="col-sm-auto">
-                    <a class="btn btn-primary" href="{{route('merchant.dashboard')}}">
+                    <a class="btn btn-primary" href="{{route('organization.dashboard')}}">
                         <i class="tio-home mr-1"></i> {{translate('Dashboard')}}
                     </a>
                 </div>
@@ -56,7 +56,7 @@
             </div>
 
             <div class="col-lg-9">
-                <form action="{{env('APP_MODE')!='demo'?route('merchant.settings'):'javascript:'}}" method="post"
+                <form action="{{env('APP_MODE')!='demo'?route('organization.settings'):'javascript:'}}" method="post"
                       enctype="multipart/form-data" id="admin-settings-form">
                     @csrf
                     <div class="card mb-3 mb-lg-5" id="generalDiv">
@@ -131,7 +131,7 @@
 
                     <div class="card-body">
                         <form id="changePasswordForm"
-                              action="{{env('APP_MODE')!='demo'?route('merchant.settings-password'):'javascript:'}}"
+                              action="{{env('APP_MODE')!='demo'?route('organization.settings-password'):'javascript:'}}"
                               method="post"
                               enctype="multipart/form-data">
                             @csrf
@@ -202,7 +202,7 @@
             var appMode = "{{ env('APP_MODE') }}";
 
             if (appMode !== 'demo') {
-                form_alert('admin-settings-form', 'Want to update merchant info ?');
+                form_alert('admin-settings-form', 'Want to update organization info ?');
             } else {
                 call_demo();
             }
@@ -212,7 +212,7 @@
             var appMode = "{{ env('APP_MODE') }}";
 
             if (appMode !== 'demo') {
-                form_alert('changePasswordForm', 'Want to update merchant password ?')
+                form_alert('changePasswordForm', 'Want to update organization password ?')
             } else {
                 call_demo();
             }

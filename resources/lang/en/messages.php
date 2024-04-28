@@ -1752,4 +1752,5 @@
   'Organization Image' => 'Organization Image',
   'Organization List' => 'Organization List',
   'organization Table' => 'Organization Table',
+  'Organization' => 'Organization',
 );

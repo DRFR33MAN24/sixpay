@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>{{translate('Merchant')}} | {{translate('Login')}}</title>
+    <title>{{translate('Organization')}} | {{translate('Login')}}</title>
 
     <link rel="shortcut icon"
           href="{{asset('storage/app/public/favicon')}}/{{Helpers::get_business_settings('favicon') ?? null}}"/>
@@ -21,7 +21,7 @@
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
     <style>
-        .merchant-login-bg {
+        .organization-login-bg {
             background-image: url({{asset('public/assets/admin')}}/svg/components/login_background.svg);
             opacity: 0.5
         }
@@ -30,7 +30,7 @@
 
 <body>
 <main id="content" role="main" class="main h-100vh d-flex flex-column justify-content-center">
-    <div class="position-fixed top-0 right-0 left-0 bg-img-hero h-100 merchant-login-bg">
+    <div class="position-fixed top-0 right-0 left-0 bg-img-hero h-100 organization-login-bg">
     </div>
     <div class="container py-5 d-flex justify-content-center">
         <div class="login-card d-inline-block">
@@ -51,7 +51,7 @@
 
                 <div class="col-md-6">
                     <div class="bg-white h-100 d-flex align-items-center justify-content-center py-5 px-4">
-                        <form class="" action="{{route('merchant.auth.login')}}" method="post" id="form-id">
+                        <form class="" action="{{route('organization.auth.login')}}" method="post" id="form-id">
                             @csrf
                             <div class="text-center">
                                 <div class="mb-5">
@@ -59,7 +59,7 @@
                                 </div>
                             </div>
 
-                            <div class="js-form-message form-group merchant-login-form-group">
+                            <div class="js-form-message form-group organization-login-form-group">
                                 <select id="country_code" name="country_code"
                                         class="form-control __form-control __form-control-select" required>
                                     <option value="">{{ translate('country code') }}</option>
