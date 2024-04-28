@@ -93,5 +93,16 @@ class Transaction extends Model
         });
     }
 
+        /**
+     * @param $query
+     * @return mixed
+     */
+    public function scopeOrganization($query): mixed
+    {
+        return $query->whereHas('user', function ($q) {
+            $q->where('type', 4);
+        });
+    }
+
 
 }

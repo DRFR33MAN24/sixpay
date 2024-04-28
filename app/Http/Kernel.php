@@ -77,5 +77,6 @@ class Kernel extends HttpKernel
         'deviceVerify' => DeviceVerifyMiddleware::class,
         'checkDeviceId' => CheckDeviceId::class,
         'merchant' => \App\Http\Middleware\MerchantMiddleware::class,
+        // 'organization' => \App\Http\Middleware\OrganizationMiddleware::class,
     ];
 }

@@ -5,6 +5,7 @@ const ADMIN_TYPE = 0;
 const AGENT_TYPE = 1;
 const CUSTOMER_TYPE = 2;
 const MERCHANT_TYPE = 3;
+const ORGANIZATION_TYPE = 4;
 
 //transaction type
 const ADD_MONEY = 'add_money';

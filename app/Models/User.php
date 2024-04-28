@@ -128,6 +128,15 @@ class User extends Authenticatable
         return $query->where('type', '=', 3);
     }
 
+        /**
+     * @param $query
+     * @return mixed
+     */
+    public function scopeOrganizationtUser($query): mixed
+    {
+        return $query->where('type', '=', 4);
+    }
+
     /**
      * @param $query
      * @param $user_type
@@ -160,6 +169,14 @@ class User extends Authenticatable
     public function merchant(): HasOne
     {
         return $this->hasOne(Merchant::class, 'user_id', 'id');
+    }
+
+        /**
+     * @return HasOne
+     */
+    public function organization(): HasOne
+    {
+        return $this->hasOne(Organization::class, 'user_id', 'id');
     }
 
     public static function boot()
