@@ -107,6 +107,32 @@
                         <small class="tio-more-horizontal nav-subtitle-replacer"></small>
                     </li>
 
+                   {{-- <li class="navbar-vertical-aside-has-menu {{Request::is('admin/organization*')?'active':''}}">
+                        <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:"
+                        >
+                            <i class="tio-users-switch nav-icon"></i>
+                            <span
+                                class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('organization')}}</span>
+                        </a>
+                        <ul class="js-navbar-vertical-aside-submenu nav nav-sub" style="display: {{Request::is('admin/organization*')?'block':'none'}}">
+                            <li class="navbar-vertical-aside-has-menu {{Request::is('admin/organization/add')?'active':''}}">
+                                <a class="nav-link " href="{{route('admin.organization.add')}}"
+                                   title="{{translate('add')}}">
+                                    <span class="tio-circle nav-indicator-icon"></span>
+                                    <span class="text-truncate">{{translate('register')}}</span>
+                                </a>
+                            </li>
+                            <li class="navbar-vertical-aside-has-menu {{Request::is('admin/organization/list')?'active':''}}">
+                                <a class="nav-link " href="{{route('admin.organization.list')}}"
+                                   title="{{translate('list')}}">
+                                    <span class="tio-circle nav-indicator-icon"></span>
+                                    <span class="text-truncate">{{translate('list')}}</span>
+                                </a>
+                            </li>
+    
+                        </ul>
+                    </li> --}}
+
                     <li class="navbar-vertical-aside-has-menu {{Request::is('admin/agent*')?'active':''}}">
                         <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:"
                         >

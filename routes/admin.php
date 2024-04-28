@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\ExpenseController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\MerchantController;
+use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\TransferController;
 use App\Http\Controllers\Admin\WithdrawController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -229,6 +230,19 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
             Route::post('update/{id}', [MerchantController::class, 'update'])->name('update');
             Route::post('search', [MerchantController::class, 'search'])->name('search');
             Route::get('status/{id}', [MerchantController::class, 'status'])->name('status');
+
+        });
+
+        Route::group(['prefix' => 'organization', 'as' => 'organization.'], function () {
+            Route::get('add', [OrganizationController::class, 'index'])->name('add');
+            Route::post('store', [OrganizationController::class, 'store'])->name('store');
+            Route::get('list', [OrganizationController::class, 'list'])->name('list');
+            Route::get('view/{user_id}', [OrganizationController::class, 'view'])->name('view');
+            Route::get('transaction/{user_id}', [OrganizationController::class, 'transaction'])->name('transaction');
+            Route::get('edit/{id}', [OrganizationController::class, 'edit'])->name('edit');
+            Route::post('update/{id}', [OrganizationController::class, 'update'])->name('update');
+            Route::post('search', [OrganizationController::class, 'search'])->name('search');
+            Route::get('status/{id}', [OrganizationController::class, 'status'])->name('status');
 
         });
 

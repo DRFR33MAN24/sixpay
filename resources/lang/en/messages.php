@@ -1747,4 +1747,9 @@
   'Updated Successfully' => 'Updated Successfully',
   'gateway_image' => 'Gateway image',
   'Want to update the password ?' => 'Want to update the password  ',
+  'organization' => 'Organization',
+  'Add New Organization' => 'Add New Organization',
+  'Organization Image' => 'Organization Image',
+  'Organization List' => 'Organization List',
+  'organization Table' => 'Organization Table',
 );

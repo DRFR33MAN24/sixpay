@@ -128,11 +128,11 @@ class User extends Authenticatable
         return $query->where('type', '=', 3);
     }
 
-        /**
+    /**
      * @param $query
      * @return mixed
      */
-    public function scopeOrganizationtUser($query): mixed
+    public function scopeOrganizationUser($query): mixed
     {
         return $query->where('type', '=', 4);
     }
