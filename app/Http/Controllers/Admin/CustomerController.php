@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\CentralLogics\Helpers;
 use App\Http\Controllers\Controller;
+use App\Models\CustomerTag;
 use App\Models\EMoney;
 use App\Models\Transaction;
 use App\Models\User;
@@ -105,6 +106,89 @@ class CustomerController extends Controller
         return redirect(route('admin.customer.list'));
     }
 
+    public function add_tags(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+
+        ]);
+
+        $tag = new CustomerTag();
+
+        $tag->name = $request->name;
+
+        $tag->save();
+
+        Toastr::success(translate('Tag created successfully!'));
+        return redirect(route('admin.customer.tags-list'));
+    }
+
+    public function tagsList(Request $request)
+    {
+        $queryParams = [];
+        $search = $request['search'];
+        if ($request->has('search')) {
+            $key = explode(' ', $request['search']);
+            $tags = CustomerTag::where(function ($q) use ($key) {
+                foreach ($key as $value) {
+                    $q->orWhere('name', 'like', "%{$value}%");
+                }
+            });
+            $queryParams = ['search' => $request['search']];
+        } else {
+            $tags = CustomerTag::query();
+        }
+
+        $tags = $tags->latest()->paginate(Helpers::pagination_limit())->appends($queryParams);
+        return view('admin-views.customer.tags_list', compact('tags', 'search'));
+
+      
+    }
+
+        /**
+     * @param $id
+     * @return Application|Factory|View
+     */
+    public function edit_tag($id): Factory|View|Application
+    {
+        $tag = CustomerTag::find($id);
+        return view('admin-views.customer.tags_edit', compact('tag'));
+    }
+          /**
+     * @param $id
+     * @return Application|Factory|View
+     */
+    public function delete_tag($id): Redirector|Application|RedirectResponse
+    {
+        $tag = CustomerTag::find($id);
+        $tag->delete();
+        Toastr::success(translate('Tag deleted successfully!'));
+        return redirect(route('admin.customer.tags-list'));
+    }
+     /**
+     * @param Request $request
+     * @param $id
+     * @return Application|RedirectResponse|Redirector
+     */
+    public function update_tag(Request $request, $id): Redirector|Application|RedirectResponse
+    {
+        $request->validate([
+            'name' => 'required',
+
+        ]);
+
+        $tag = CustomerTag::find($id);
+
+        $tag->name = $request->name;
+
+        $tag->save();
+
+        Toastr::success(translate('Tag updated successfully!'));
+        return redirect(route('admin.customer.tags-list'));
+    }
+
+    
+
     /**
      * @param Request $request
      * @return Application|Factory|View
@@ -131,6 +215,8 @@ class CustomerController extends Controller
         $customers = $customers->latest()->customer()->paginate(Helpers::pagination_limit())->appends($queryParams);
         return view('admin-views.customer.list', compact('customers', 'search'));
     }
+
+    
 
     /**
      * @param Request $request

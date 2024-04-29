@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 use Stevebauman\Location\Facades\Location;
 
 class OrganizationController extends Controller
@@ -73,20 +74,18 @@ class OrganizationController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'f_name' => 'required',
-            'l_name' => 'required',
+            'org_name' => 'required',
+
             'image' => 'required',
             'country_code' => 'required',
             'phone' => 'required|unique:users|min:8|max:20',
             'password' => 'required|min:8',
-            'identification_type' => 'required',
-            'identification_number' => 'required',
-            'store_name' => 'required',
-            'callback' => 'required',
+
+
             'address' => 'required',
-            'bin' => 'required',
+
             'logo' => 'required',
-            'identification_image' => 'required',
+
         ],[
             'password.min' => translate('Password must contain 8 characters'),
             'country_code.required' => translate('Country code select is required')
@@ -114,29 +113,18 @@ class OrganizationController extends Controller
                 $logo = 'def.png';
             }
 
-            $identityImageNames = [];
-            if (!empty($request->file('identification_image'))) {
-                foreach ($request->identification_image as $img) {
-                    $identityImage = Helpers::upload('organization/', 'png', $img);
-                    $identityImageNames[] = $identityImage;
-                }
-                $identityImage = json_encode($identityImageNames);
-            } else {
-                $identityImage = json_encode([]);
-            }
+
 
             $user = $this->user;
-            $user->f_name = $request->f_name;
-            $user->l_name = $request->l_name;
+           
+
             $user->email = $request->email;
             $user->dial_country_code = $request->country_code;
             $user->phone = $phone;
             $user->password = bcrypt($request->password);
-            $user->type = ORGANIZATION_TYPE;    //['Admin'=>0, 'Agent'=>1, 'Customer'=>2, 'Merchant'=>3]
+            $user->type = ORGANIZATION_TYPE;    //['Admin'=>0, 'Agent'=>1, 'Customer'=>2, 'Organization'=>3]
             $user->image = $imageName;
-            $user->identification_type = $request->identification_type;
-            $user->identification_number = $request->identification_number;
-            $user->identification_image = $identityImage;
+
             $user->is_kyc_verified = 1;
             $user->save();
 
@@ -146,13 +134,12 @@ class OrganizationController extends Controller
 
             $organization = $this->organization;
             $organization->user_id = $user->id;
-            $organization->store_name = $request->store_name;
-            $organization->callback = $request->callback;
+            $organization->org_name= $request->org_name;
+
             $organization->address = $request->address;
-            $organization->bin = $request->bin;
+
             $organization->logo = $logo;
-            $organization->public_key = Str::random(50);
-            $organization->secret_key = Str::random(50);
+
             $organization->organization_number = $request->phone;
             $organization->save();
 
@@ -162,11 +149,12 @@ class OrganizationController extends Controller
 
             DB::commit();
 
-            Toastr::success(translate('Merchant Added Successfully!'));
-            return redirect()->route('admin.merchant.list');
+            Toastr::success(translate('Organization Added Successfully!'));
+            return redirect()->route('admin.Organization.list');
         }catch (\Exception $exception){
+            Log::info($exception);
             DB::rollBack();
-            Toastr::warning(translate('Merchant Added Failed!'));
+            Toastr::warning(translate('Organization Added Failed!'));
             return back();
         }
     }
@@ -203,14 +191,12 @@ class OrganizationController extends Controller
     public function update(Request $request, $id): RedirectResponse
     {
         $request->validate([
-            'f_name' => 'required',
-            'l_name' => 'required',
-            'identification_type' => 'required',
-            'identification_number' => 'required',
-            'store_name' => 'required',
-            'callback' => 'required',
+            'org_name' => 'required',
+
+
+
             'address' => 'required',
-            'bin' => 'required',
+
         ],[
 
         ]);
@@ -233,24 +219,9 @@ class OrganizationController extends Controller
                 $logo = $organization['logo'];
             }
 
-            if ($request->has('identification_image')){
-                foreach (json_decode($user['identification_image'], true) as $img) {
-                    if (Storage::disk('public')->exists('organization/' . $img)) {
-                        Storage::disk('public')->delete('organization/' . $img);
-                    }
-                }
-                $imgKeeper = [];
-                foreach ($request->identification_image as $img) {
-                    $identityImage = Helpers::upload('organization/', 'png', $img);
-                    $imgKeeper[] = $identityImage;
-                }
-                $identityImage = json_encode($imgKeeper);
-            } else {
-                $identityImage = $user['identification_image'];
-            }
 
-            $user->f_name = $request->f_name;
-            $user->l_name = $request->l_name;
+
+
             $user->email = $request->has('email') ? $request->email : $user->email;
 
             if ($request->has('password') && strlen($request->password) > 7) {
@@ -258,16 +229,14 @@ class OrganizationController extends Controller
             }
 
             $user->image = $imageName;
-            $user->identification_type = $request->identification_type;
-            $user->identification_number = $request->identification_number;
-            $user->identification_image = $identityImage;
+
             $user->update();
 
             $organization->user_id = $user->id;
-            $organization->store_name = $request->store_name;
-            $organization->callback = $request->callback;
+            $organization->org_name = $request->org_name;
+
             $organization->address = $request->address;
-            $organization->bin = $request->bin;
+ 
             $organization->logo = $logo;
             $organization->update();
 

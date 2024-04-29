@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Organization extends Model
 {
     use HasFactory;
 
-    protected $table = 'organizaions';
+    protected $table = 'organizations';
 
     protected $casts = [
         'user_id' => 'integer',
@@ -22,7 +23,7 @@ class Organization extends Model
         'bin' => 'string',
         'public_key' => 'string',
         'secret_key' => 'string',
-        'organizaion_number' => 'string',
+        'organization_number' => 'string',
     ];
 
     protected $appends = ['logo_fullpath'];
@@ -41,9 +42,17 @@ class Organization extends Model
     /**
      * @return BelongsTo
      */
-    public function organizaion_user(): BelongsTo
+    public function organization_user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+            /**
+     * @return HasMany
+     */
+    public function customers(): HasMany
+    {
+        return $this->hasMany(User::class, 'org_id', 'id');
     }
 
 

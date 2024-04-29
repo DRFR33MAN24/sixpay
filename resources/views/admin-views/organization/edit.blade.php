@@ -16,18 +16,12 @@
                 <div class="row">
                     <div class="col-sm-6 col-lg-4">
                         <div class="form-group">
-                            <label class="input-label" for="exampleFormControlInput1">{{translate('First Name')}}</label>
-                            <input type="text" name="f_name" class="form-control" value="{{ $user->f_name }}"
-                                    placeholder="{{translate('First Name')}}" required>
+                            <label class="input-label" for="exampleFormControlInput1">{{translate('Organization Name')}}</label>
+                            <input type="text" name="org_name" class="form-control" value="{{ $organization->org_name }}"
+                                    placeholder="{{translate('Organization Name')}}" required>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-lg-4">
-                        <div class="form-group">
-                            <label class="input-label" for="exampleFormControlInput1">{{translate('Last Name')}}</label>
-                            <input type="text" name="l_name" class="form-control" value="{{ $user->l_name }}"
-                                    placeholder="{{translate('Last Name')}}" required>
-                        </div>
-                    </div>
+ 
                     <div class="col-sm-6 col-lg-4">
                         <div class="form-group">
                             <label class="input-label" for="exampleFormControlInput1">{{translate('email')}}
@@ -54,31 +48,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-lg-4">
-                        <div class="form-group">
-                            <label class="input-label" for="exampleFormControlInput1">{{translate('Identification Type')}}</label>
-                            <select name="identification_type" class="form-control">
-                                <option value="passport" {{ $user->identification_type == 'passport' ? 'selected' : '' }}>{{translate('passport')}}</option>
-                                <option value="driving_license" {{ $user->identification_type == 'driving_license' ? 'selected' : '' }}>{{translate('driving')}} {{translate('license')}}</option>
-                                <option value="nid" {{ $user->identification_type == 'nid' ? 'selected' : '' }}>{{translate('nid')}}</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-lg-4">
-                        <div class="form-group">
-                            <label class="input-label"
-                                    for="exampleFormControlInput1">{{translate('Identification Number')}}</label>
-                            <input type="number" name="identification_number" class="form-control" value="{{ $user->identification_number }}"
-                                    placeholder="{{ translate('Ex: 534354') }}" required>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-lg-4">
-                        <div class="form-group">
-                            <label class="input-label" for="exampleFormControlInput1">{{translate('Store Name')}}</label>
-                            <input type="text" name="store_name" class="form-control" value="{{ $organization->store_name }}"
-                                    placeholder="{{translate('Store Name')}}" required>
-                        </div>
-                    </div>
+
+
+
                     <div class="col-sm-6 col-lg-4">
                         <div class="form-group">
                             <label class="input-label" for="exampleFormControlInput1">{{translate('Address')}}</label>
@@ -86,43 +58,9 @@
                                     placeholder="{{translate('Address')}}" required>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-lg-4">
-                        <div class="form-group">
-                            <label class="input-label" for="exampleFormControlInput1">{{translate('BIN')}}</label>
-                            <input type="text" name="bin" class="form-control" value="{{ $organization->bin }}"
-                                    placeholder="{{translate('BIN')}}" required>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-lg-4">
-                        <div class="form-group">
-                            <label class="input-label" for="exampleFormControlInput1">{{translate('callback')}}</label>
-                            <input type="text" name="callback" class="form-control" value="{{ $organization->callback }}"
-                                    placeholder="{{translate('callback')}}" required>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-lg-4">
-                        <div class="form-group mb-3">
-                            <div class="d-flex align-items-center gap-2 mb-2">
-                                <label class="text-dark mb-0">{{translate('Identification Image')}}</label>
-                                <small class="text-danger"> *( {{translate('ratio 1:1')}} )</small>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="product--coba spartan_item_wrapper-area">
-                                <div class="row g-2" id="coba">
-                                    @foreach($user['organization_identification_image_fullpath'] as $img)
-                                        <div class="two__item w-50">
-                                            <div class="max-h-140px existing-item">
-                                                <img class="width-100px height-100px"
-                                                        src="{{$img}}"
-                                                     alt="{{ translate('identification_image') }}">
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
+
+
                     <div class="col-sm-6">
                         <div class="form-group">
                             <div class="d-flex align-items-center gap-2 mb-2">

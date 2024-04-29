@@ -15,18 +15,18 @@
                 <div class="row">
                     <div class="col-sm-6 col-lg-4">
                         <div class="form-group">
-                            <label class="input-label" for="exampleFormControlInput1">{{translate('First Name')}}</label>
-                            <input type="text" name="f_name" class="form-control" value="{{ old('f_name') }}"
-                                    placeholder="{{translate('First Name')}}" required>
+                            <label class="input-label" for="exampleFormControlInput1">{{translate('Organization Name')}}</label>
+                            <input type="text" name="org_name" class="form-control" value="{{ old('org_name') }}"
+                                    placeholder="{{translate('Organization Name')}}" required>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-lg-4">
+                    <!-- <div class="col-sm-6 col-lg-4">
                         <div class="form-group">
                             <label class="input-label" for="exampleFormControlInput1">{{translate('Last Name')}}</label>
                             <input type="text" name="l_name" class="form-control" value="{{ old('l_name') }}"
                                     placeholder="{{translate('Last Name')}}" required>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-sm-6 col-lg-4">
                         <div class="form-group">
                             <label class="input-label" for="exampleFormControlInput1">{{translate('email')}}
@@ -69,7 +69,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-lg-4">
+                    <!-- <div class="col-sm-6 col-lg-4">
                         <div class="form-group">
                             <label class="input-label" for="exampleFormControlInput1">{{translate('Identification Type')}}</label>
                             <select name="identification_type" class="form-control">
@@ -78,22 +78,22 @@
                                 <option value="nid">{{translate('nid')}}</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="col-sm-6 col-lg-4">
+                    </div> -->
+                    <!-- <div class="col-sm-6 col-lg-4">
                         <div class="form-group">
                             <label class="input-label"
                                     for="exampleFormControlInput1">{{translate('Identification Number')}}</label>
                             <input type="text" name="identification_number" class="form-control" value="{{ old('identification_number') }}"
                                     placeholder="{{ translate('Ex : DH-23434-LS') }}" required>
                         </div>
-                    </div>
-                    <div class="col-sm-6 col-lg-4">
+                    </div> -->
+                    <!-- <div class="col-sm-6 col-lg-4">
                         <div class="form-group">
                             <label class="input-label" for="exampleFormControlInput1">{{translate('Store Name')}}</label>
                             <input type="text" name="store_name" class="form-control" value="{{ old('store_name') }}"
                                     placeholder="{{translate('Store Name')}}" required>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-sm-6 col-lg-4">
                         <div class="form-group">
                             <label class="input-label" for="exampleFormControlInput1">{{translate('Address')}}</label>
@@ -101,21 +101,21 @@
                                     placeholder="{{translate('Address')}}" required>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-lg-4">
+                    <!-- <div class="col-sm-6 col-lg-4">
                         <div class="form-group">
                             <label class="input-label" for="exampleFormControlInput1">{{translate('BIN')}}</label>
                             <input type="text" name="bin" class="form-control" value="{{ old('bin') }}"
                                     placeholder="{{translate('BIN')}}" required>
                         </div>
-                    </div>
-                    <div class="col-sm-6 col-lg-4">
+                    </div> -->
+                    <!-- <div class="col-sm-6 col-lg-4">
                         <div class="form-group">
                             <label class="input-label" for="exampleFormControlInput1">{{translate('callback')}}</label>
                             <input type="text" name="callback" class="form-control" value="{{ old('callback') }}"
                                     placeholder="{{translate('callback')}}" required>
                         </div>
-                    </div>
-                    <div class="col-sm-6 col-lg-4">
+                    </div> -->
+                    <!-- <div class="col-sm-6 col-lg-4">
                         <div class="form-group mb-3">
                             <div class="form-group mb-0">
                                 <label class="input-label" for="exampleFormControlInput1">{{translate('Identification Image')}}
@@ -128,7 +128,7 @@
                                 <div class="row g-2" id="coba"></div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-sm-6">
                         <div class="form-group">
                             <div class="d-flex align-items-center gap-2 mb-2">

@@ -6,6 +6,7 @@ use App\CentralLogics\helpers;
 use App\Exceptions\TransactionFailedException;
 use App\Http\Controllers\Controller;
 use App\Models\EMoney;
+use App\Models\Organization;
 use App\Models\Transfer;
 use App\Models\User;
 use Brian2694\Toastr\Facades\Toastr;
@@ -16,6 +17,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TransferController extends Controller
 {
@@ -82,6 +84,11 @@ class TransferController extends Controller
             [
                 'amount.not_in' => translate('Amount must be greater than zero!'),
             ]);
+
+          if ($request->receiver_type == 4) {
+          $request->to_user_id = Organization::find($request->to_user_id)->user_id;
+        
+          }
 
         DB::beginTransaction();
         $data = [];
@@ -171,17 +178,34 @@ class TransferController extends Controller
     {
         $key = explode(' ', $request['q']);
         $receiverType = $request['receiver_type'];
-        $data = $this->user
+        if ($receiverType != 4) {
+         
+            $data = $this->user
             ->where('type', $receiverType)
             ->where(function ($q) use ($key) {
                 foreach ($key as $value) {
                     $q->orWhere('f_name', 'like', "%{$value}%")
-                        ->orWhere('l_name', 'like', "%{$value}%")
-                        ->orWhere('phone', 'like', "%{$value}%");
+                    ->orWhere('l_name', 'like', "%{$value}%")
+                    ->orWhere('phone', 'like', "%{$value}%");
                 }
             })
             ->limit(8)
             ->get([DB::raw('id, CONCAT(f_name, " ", l_name, " (", phone ,")") as text')]);
+        } else {
+            $data = Organization::
+           
+            where(function ($q) use ($key) {
+                foreach ($key as $value) {
+                    $q->orWhere('org_name', 'like', "%{$value}%")
+                  
+                    ->orWhere('organization_number', 'like', "%{$value}%");
+                }
+            })
+            ->limit(8)
+            ->get([DB::raw('id, CONCAT(org_name, " ", " (", organization_number ,")") as text')]);
+        }
+        
+       
 
         $data[] = (object)['id' => false, 'text' => translate('Choose')];
 

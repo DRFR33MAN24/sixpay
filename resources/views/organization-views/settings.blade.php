@@ -87,7 +87,7 @@
 
                         <div class="card-body">
                             <div class="row form-group">
-                                <label for="firstNameLabel" class="col-sm-3 col-form-label input-label">{{translate('Full name')}} <i
+                                <label for="firstNameLabel" class="col-sm-3 col-form-label input-label">{{translate('Organization name')}} <i
                                         class="tio-help-outlined text-body ml-1" data-toggle="tooltip"
                                         data-placement="top"
                                         title="Display name"></i></label>
@@ -95,11 +95,9 @@
                                 <div class="col-sm-9">
                                     <div class="input-group input-group-sm-down-break">
                                         <input type="text" class="form-control" name="f_name" id="firstNameLabel"
-                                               placeholder="Your first name" aria-label="Your first name"
-                                               value="{{auth('user')->user()->f_name}}">
-                                        <input type="text" class="form-control" name="l_name" id="lastNameLabel"
-                                               placeholder="Your last name" aria-label="Your last name"
-                                               value="{{auth('user')->user()->l_name}}">
+                                               placeholder="Your first name" aria-label="Your Organization name"
+                                               value="{{auth('user')->user()->organization->org_name}}">
+
                                     </div>
                                 </div>
                             </div>

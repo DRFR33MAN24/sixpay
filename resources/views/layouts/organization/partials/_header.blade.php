@@ -62,7 +62,7 @@
                                      "type": "css-animation"
                                    }'>
                                 <div class="media-body pl-0 pr-2">
-                                    <span class="card-title h5 text-right"> {{translate('Merchant Panel')}} </span>
+                                    <span class="card-title h5 text-right"> {{translate('Organization Panel')}} </span>
                                     <span
                                         class="card-text">{{auth('user')->user()->f_name??''}} {{auth('user')->user()->l_name??''}}</span>
                                 </div>

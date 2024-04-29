@@ -93,6 +93,16 @@
                             <td>
                                 {{$transfers->firstitem()+$key}}
                             </td>
+                            @if($transfer->receiver_type == 4)
+                            <td>
+                                @php($orgInfo = \App\CentralLogics\Helpers::get_org_info($transfer->receiver))
+                                @if(isset($orgInfo))
+                                    <a href="{{route('admin.customer.view',[$orgInfo['id']])}}">{{ $orgInfo->org_name}}</a>
+                                @else
+                                    <span class="text-muted badge badge-danger text-dark">{{ translate('User unavailable') }}</span>
+                                @endif
+                            </td>
+                            @else
                             <td>
                                 @php($userInfo = \App\CentralLogics\Helpers::get_user_info($transfer->receiver))
                                 @if(isset($userInfo))
@@ -101,11 +111,15 @@
                                     <span class="text-muted badge badge-danger text-dark">{{ translate('User unavailable') }}</span>
                                 @endif
                             </td>
+
+                            @endif
                             <td>
                                 @if($transfer->receiver_type == 1)
                                     <span class="text-uppercase badge badge-light text-muted">{{translate('Agent')}}</span>
                                 @elseif($transfer->receiver_type == 2)
                                     <span class="text-uppercase badge badge-light text-muted">{{translate('Customer')}}</span>
+                                    @elseif($transfer->receiver_type == 4)
+                                    <span class="text-uppercase badge badge-light text-muted">{{translate('Organization')}}</span>
                                 @endif
                             </td>
                             <td class="amount-column">

@@ -189,6 +189,11 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
         });
 
         Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => []], function () {
+            Route::get('tags-list', [CustomerController::class, 'tagsList'])->name('tags-list');
+            Route::post('add-tags', [CustomerController::class, 'add_tags'])->name('add-tags');
+            Route::get('delete-tag/{id}', [CustomerController::class, 'delete_tag'])->name('delete-tag');
+            Route::get('edit-tag/{id}', [CustomerController::class, 'edit_tag'])->name('edit-tag');
+            Route::post('update-tag/{id}', [CustomerController::class, 'update_tag'])->name('update-tag');
             Route::get('add', [CustomerController::class, 'index'])->name('add');
             Route::post('store', [CustomerController::class, 'store'])->name('store');
             Route::get('list', [CustomerController::class, 'customerList'])->name('list');

@@ -42,7 +42,7 @@
                         <th>{{translate('SL')}}</th>
                         <th>{{translate('name')}}</th>
                         <th>{{translate('Contact')}}</th>
-                        <th>{{ translate('callback') }}</th>
+                      
                         <th>{{translate('status')}}</th>
                         <th class="text-center">{{translate('action')}}</th>
                     </tr>
@@ -60,7 +60,7 @@
                                              alt="{{ translate('organization') }}">
                                     </div>
                                     <div class="media-body">
-                                        {{$organization['f_name'].' '.$organization['l_name']}}
+                                        {{$organization->organization['org_name']}}
                                     </div>
                                 </a>
                             </td>
@@ -76,9 +76,7 @@
                                     @endif
                                 </div>
                             </td>
-                            <td>
-                                {{$organization->organization['callback']}}
-                            </td>
+     
                             <td>
                                 <label class="switcher" for="welcome_status_{{$organization['id']}}">
                                     <input type="checkbox" name="welcome_status" class="switcher_input change-status"

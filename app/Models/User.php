@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -51,7 +52,7 @@ class User extends Authenticatable
 
         $path = asset('public/assets/admin/img/160x160/img1.jpg');
 
-        $folderNames = [0 => 'admin', 1 => 'agent', 2 => 'customer'];
+        $folderNames = [0 => 'admin', 1 => 'agent', 2 => 'customer',4=>'organization'];
         $folder = $folderNames[$this->type] ?? 'merchant';
         if (!is_null($image) && Storage::disk('public')->exists($folder . '/' . $image)) {
             $path = asset('storage/app/public/' . $folder . '/' . $image);
@@ -178,6 +179,22 @@ class User extends Authenticatable
     {
         return $this->hasOne(Organization::class, 'user_id', 'id');
     }
+
+        /**
+     * @return BelongsTo
+     */
+    public function organization_customer(): BelongsTo
+    {
+        return $this->belongsTo(Organization::class, 'org_id', 'id');
+    }
+
+    public function tag(): BelongsTo
+    {
+        return $this->belongsTo(CustomerTag::class);
+    }
+
+
+
 
     public static function boot()
     {

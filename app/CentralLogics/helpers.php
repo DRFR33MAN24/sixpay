@@ -8,6 +8,7 @@ use App\Models\BusinessSetting;
 use App\Models\Currency;
 use App\Models\EMoney;
 use App\Models\Fund;
+use App\Models\Organization;
 use App\Models\Transaction;
 use App\Models\TransactionLimit;
 use App\Models\Transfer;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 use Laravelpkg\Laravelchk\Http\Controllers\LaravelchkController;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Brian2694\Toastr\Facades\Toastr;
@@ -527,11 +529,29 @@ class helpers
 
     public static function get_user_info($user_id)
     {
-        $user = User::find($user_id);
-        if (isset($user)) {
-            return $user;
-        }
-        return null;
+     
+          
+            $user = User::find($user_id);
+            if (isset($user)) {
+                return $user;
+            }
+            return null;
+
+        
+    }
+
+    public static function get_org_info($org_id)
+    {
+        
+        
+        $org = User::find($org_id)->organization;
+    
+            if (isset($org)) {
+                return $org;
+            }
+            return null;
+
+        
     }
 
     public static function get_user_id($phone)
