@@ -41,7 +41,8 @@ class CustomerController extends Controller
     {
         $ip = env('APP_MODE') == 'live' ? $request->ip() : '61.247.180.82';
         $currentUserInfo = Location::get($ip);
-        return view('organization-views.customer.index', compact('currentUserInfo'));
+        $tags = CustomerTag::all();
+        return view('organization-views.customer.index', compact('currentUserInfo','tags'));
     }
 
     /**
@@ -92,7 +93,9 @@ class CustomerController extends Controller
             $user->type = CUSTOMER_TYPE;
             $user->referral_id = $request->referral_id ?? null;
             $user->identification_image = json_encode([]);
-            $user->org_id = $this->user->id;
+            $user->org_id = auth()->user()->organization->id;
+            $user->tag_id = $request->tag;
+            
             $user->save();
 
             $user->find($user->id);
@@ -202,7 +205,7 @@ class CustomerController extends Controller
         $search = $request['search'];
         if ($request->has('search')) {
             $key = explode(' ', $request['search']);
-            $customers = $this->user->where(function ($q) use ($key) {
+            $customers = $this->user->with('tags')->where(function ($q) use ($key) {
                 foreach ($key as $value) {
                     $q->where('org_id',auth()->user()->organization->id)
                     ->orWhere('f_name', 'like', "%{$value}%")
@@ -230,7 +233,7 @@ class CustomerController extends Controller
     public function search(Request $request): JsonResponse
     {
         $key = explode(' ', $request['search']);
-        $customers = $this->user->where(function ($q) use ($key) {
+        $customers = $this->user->where('org_id',auth()->user()->organization->id)->where(function ($q) use ($key) {
             foreach ($key as $value) {
                 $q->orWhere('f_name', 'like', "%{$value}%")
                     ->orWhere('l_name', 'like', "%{$value}%")
@@ -265,7 +268,8 @@ class CustomerController extends Controller
         if ($request->has('search')) {
             $key = explode(' ', $request['search']);
 
-            $users = $this->user->where(function ($q) use ($key) {
+            $users = $this->user->where('org_id',auth()->user()->organization->id)
+            ->where(function ($q) use ($key) {
                 foreach ($key as $value) {
                     $q->orWhere('id', 'like', "%{$value}%")
                         ->orWhere('phone', 'like', "%{$value}%")
@@ -274,7 +278,9 @@ class CustomerController extends Controller
                         ->orWhere('email', 'like', "%{$value}%");
                 }
             })->get()->pluck('id')->toArray();
-
+            if (count($users) ==0) {
+                $users = $this->user->where('org_id',auth()->user()->organization->id)->get()->pluck('id')->toArray();
+               }
             $transactions = $this->transaction->where(function ($q) use ($key, $users) {
                 foreach ($key as $value) {
                     $q->orWhereIn('from_user_id', $users)
@@ -346,7 +352,8 @@ class CustomerController extends Controller
     public function edit($id): Factory|View|Application
     {
         $customer = $this->user->find($id);
-        return view('organization-views.customer.edit', compact('customer'));
+        $tags = CustomerTag::all();
+        return view('organization-views.customer.edit', compact('customer','tags'));
     }
 
     /**
@@ -366,6 +373,8 @@ class CustomerController extends Controller
 
         $customer->f_name = $request->f_name;
         $customer->l_name = $request->l_name;
+        $customer->org_id = auth()->user()->organization->id;
+        $customer->tag_id = $request->tag;
         $customer->image = $request->has('image') ? Helpers::update('customer/', $customer->image, 'png', $request->file('image')) : $customer->image;
         $customer->email = $request->has('email') ? $request->email : $customer->email;
         $customer->gender = $request->has('gender') ? $request->gender : $customer->gender;
@@ -391,7 +400,7 @@ class CustomerController extends Controller
         $search = $request['search'];
         if ($request->has('search')) {
             $key = explode(' ', $request['search']);
-            $customers = $this->user->where('is_kyc_verified', '!=', 1)->where(function ($q) use ($key) {
+            $customers = $this->user->where('org_id',auth()->user()->organization->id)->where('is_kyc_verified', '!=', 1)->where(function ($q) use ($key) {
                 foreach ($key as $value) {
                     $q->orWhere('f_name', 'like', "%{$value}%")
                         ->orWhere('l_name', 'like', "%{$value}%")

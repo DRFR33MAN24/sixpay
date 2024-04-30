@@ -1781,4 +1781,8 @@
   'Tag created successfully!' => 'Tag created successfully!',
   'Tag deleted successfully!' => 'Tag deleted successfully!',
   'purpose' => 'Purpose',
+  'Transfer to selected category' => 'Transfer to selected category',
+  'Select Category' => 'Select Category',
+  'Transfer to selected' => 'Transfer to selected',
+  'Category' => 'Category',
 );

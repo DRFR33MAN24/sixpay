@@ -57,6 +57,17 @@
                     </div>
                     <div class="col-sm-6 col-lg-4">
                         <div class="form-group">
+                            <label class="input-label">{{translate('Category')}}</label>
+                            <select name="tag" class="form-control" required>
+                                <option value="" selected disabled>{{translate('Select Category')}}</option>
+                                @foreach($tags as $tag)
+                                <option value={{$tag->id}} >{{$tag->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="form-group">
                             <label class="input-label"
                                     for="exampleFormControlInput1">{{translate('Occupation')}}</label>
                             <input type="text" name="occupation" class="form-control"

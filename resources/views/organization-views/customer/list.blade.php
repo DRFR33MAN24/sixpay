@@ -43,7 +43,9 @@
                         <tr>
                             <th>{{translate('SL')}}</th>
                             <th>{{translate('name')}}</th>
+                            <th>{{translate('Category')}}</th>
                             <th>{{translate('Contacts')}}</th>
+
                             <th>{{translate('status')}}</th>
                             <th class="text-center">{{translate('action')}}</th>
                         </tr>
@@ -64,6 +66,16 @@
                                         {{$customer['f_name'].' '.$customer['l_name']}}
                                     </div>
                                 </a>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column gap-1">
+                                   
+                                    @if(isset($customer->tag))
+                                        <a class="text-dark" href="#" class="text-primary">{{ $customer->tag->name }}</a>
+                                    @else
+                                        <span class="text-muted text-left">{{ translate('Category Unavailable') }}</span>
+                                    @endif
+                                </div>
                             </td>
                             <td>
                                 <div class="d-flex flex-column gap-1">

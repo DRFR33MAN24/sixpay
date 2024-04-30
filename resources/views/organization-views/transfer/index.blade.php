@@ -18,9 +18,9 @@
                             <label class="input-label" for="exampleFormControlInput1">{{translate('Receiver Type')}}</label>
                             <select name="receiver_type" class="form-control js-select2-custom" id="receiver_type" required>
                                 <option value="" selected disabled>{{translate('Select Type')}}</option>
-                                <option value="1">{{translate('Agent')}}</option>
+                           
                                 <option value="2">{{translate('Customer')}}</option>
-                                <option value="4">{{translate('Organization')}}</option>
+                              
                             </select>
                         </div>
                     </div>
@@ -50,6 +50,46 @@
                 </div>
                 <div class="d-flex justify-content-end">
                     <button type="submit" class="btn btn-primary">{{translate('Transfer')}}</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card card-body mb-3">
+            <form action="{{route('organization.transfer.mass_transfer')}}" method="post" enctype="multipart/form-data">
+                @csrf
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="input-label" for="exampleFormControlInput1">{{translate('Receiver Type')}}</label>
+                            <select name="customer_tag" class="form-control js-select2-custom" id="customer_tag" required>
+                                <option value="" selected disabled>{{translate('Select Category')}}</option>
+                                <option value="all">{{translate('All')}}</option>
+                                @foreach($tags as $key=>$tag)
+                                <option value={{$tag->name}}>{{$tag->name}}</option>
+                              @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="input-label" for="exampleFormControlInput1">{{translate('Amount')}}</label>
+                            <input type="number" name="amount" step="any" class="form-control" min="1" max="{{$unusedBalance}}"
+                                   {{$unusedBalance <= 0 ? 'disabled' : ''}}
+                                   placeholder="{{translate('Ex : 9999')}}" required>
+                            @if($unusedBalance > 0)
+                                <small class="w-100">{{ translate('The amount must be less than or equal to ') . $unusedBalance}}</small>
+                            @else
+                                <small class="w-100">{{ translate('The amount is too low to transfer') }}</small>
+                            @endif
+                        </div>
+                    </div>
+           
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary">{{translate('Transfer to selected')}}</button>
                 </div>
             </form>
         </div>

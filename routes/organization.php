@@ -58,6 +58,7 @@ Route::group(['namespace' => 'Organization', 'as' => 'organization.'], function 
         Route::group(['prefix' => 'transfer', 'as' => 'transfer.'], function () {
             Route::get('index', [TransferController::class, 'index'])->name('index');
             Route::post('store', [TransferController::class, 'store'])->name('store');
+            Route::post('mass_transfer', [TransferController::class, 'mass_transfer'])->name('mass_transfer');
             Route::get('get-user', [TransferController::class, 'getUser'])->name('get_user');
         });
 

@@ -31,7 +31,7 @@ class ExpenseController extends Controller
         $queryParams = ['search' => $search, 'date_range' => $request['date_range']];
 
         $key = explode(' ', $request['search']);
-        $users = $this->user->where(function ($q) use ($key) {
+        $users = $this->user->where('org_id',auth()->user()->organization->id)->where(function ($q) use ($key) {
             foreach ($key as $value) {
                 $q->orWhere('id', 'like', "%{$value}%")
                     ->orWhere('phone', 'like', "%{$value}%")
@@ -40,7 +40,9 @@ class ExpenseController extends Controller
                     ->orWhere('email', 'like', "%{$value}%");
             }
         })->get()->pluck('id')->toArray();
-
+        if (count($users) ==0) {
+            $users = $this->user->where('org_id',auth()->user()->organization->id)->get()->pluck('id')->toArray();
+           }
         $transactions = $this->transaction->where('transaction_type', 'expense')
             ->when($request->has('search'), function ($q) use ($users) {
                 $q->whereIn('to_user_id', $users);

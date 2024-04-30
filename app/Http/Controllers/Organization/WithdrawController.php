@@ -49,7 +49,9 @@ class WithdrawController extends Controller
             ->when($request->has('search'), function ($query) use ($request) {
                 $key = explode(' ', $request['search']);
 
-                $userIds = $this->user->where(function ($q) use ($key) {
+                $userIds = $this->user
+                ->where('org_id',auth()->user()->organization->id)->
+                where(function ($q) use ($key) {
                     foreach ($key as $value) {
                         $q->orWhere('id', 'like', "%{$value}%")
                             ->orWhere('phone', 'like', "%{$value}%")
@@ -148,7 +150,7 @@ class WithdrawController extends Controller
             ->when($request->has('search'), function ($query) use ($request) {
                 $key = explode(' ', $request['search']);
 
-                $userIds = $this->user->where(function ($q) use ($key) {
+                $userIds = $this->user->where('org_id',auth()->user()->organization->id)->where(function ($q) use ($key) {
                     foreach ($key as $value) {
                         $q->orWhere('id', 'like', "%{$value}%")
                             ->orWhere('phone', 'like', "%{$value}%")

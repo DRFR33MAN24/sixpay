@@ -42,9 +42,9 @@ class TransactionController extends Controller
         $queryParam = [];
         $key = explode(' ', $request['search']);
 
-        $users = $this->user->where(function ($q) use ($key) {
+        $users = $this->user->where('org_id',auth()->user()->organization->id)->where(function ($q) use ($key) {
             foreach ($key as $value) {
-                $q->where('org_id',auth()->user()->organization->id)
+                $q
                 ->orWhere('id', 'like', "%{$value}%")
                     ->orWhere('phone', 'like', "%{$value}%")
                     ->orWhere('f_name', 'like', "%{$value}%")
@@ -52,15 +52,18 @@ class TransactionController extends Controller
                     ->orWhere('email', 'like', "%{$value}%");
             }
         })->get()->pluck('id')->toArray();
-       // Log::info($users);
 
+        if (count($users) ==0) {
+         $users = $this->user->where('org_id',auth()->user()->organization->id)->get()->pluck('id')->toArray();
+        }
+        
         $transactions = $this->transaction
             ->when($request->has('search'), function ($q) use ($key, $users) {
                 foreach ($key as $value) {
                     $q->orWhereIn('from_user_id', $users)
-                        ->orWhereIn('to_user_id', $users)
-                        ->orWhere('transaction_id', 'like', "%{$value}%")
-                        ->orWhere('transaction_type', 'like', "%{$value}%");
+                    ->orWhereIn('to_user_id', $users)
+                    ->orWhere('transaction_id', 'like', "%{$value}%")
+                    ->orWhere('transaction_type', 'like', "%{$value}%");
                 }
             })
             ->when($request['trx_type'] != 'all', function ($query) use ($request) {
@@ -69,11 +72,13 @@ class TransactionController extends Controller
                 } else {
                     return $query->where('credit', '!=', 0);
                 }
-            });
-
-        $queryParam = ['search' => $search, 'trx_type' => $transactionType];
-
-        $transactions = $transactions->latest()->paginate(Helpers::pagination_limit())->appends($queryParam);
+            })
+         ;
+            
+            $queryParam = ['search' => $search, 'trx_type' => $transactionType];
+            
+            $transactions = $transactions->latest()->paginate(Helpers::pagination_limit())->appends($queryParam);
+           // Log::info($transactions);
         return view('organization-views.transaction.index', compact('transactions', 'search',  'transactionType'));
     }
 
