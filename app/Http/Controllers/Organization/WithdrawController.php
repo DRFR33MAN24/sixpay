@@ -8,38 +8,41 @@ use App\Models\EMoney;
 use App\Models\User;
 use App\Models\WithdrawalMethod;
 use App\Models\WithdrawRequest;
+use App\Traits\TransactionTrait;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Exception\UnsupportedTypeException;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use Rap2hpoutre\FastExcel\FastExcel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+
 class WithdrawController extends Controller
 {
+    use TransactionTrait;
+
     public function __construct(
         private WithdrawRequest $withdrawRequest,
         private WithdrawalMethod $withdrawalMethod,
         private User $user,
         private EMoney $eMoney
-    ){}
+    )
+    {}
 
     /**
      * @param Request $request
      * @return Application|Factory|View
      */
-    public function list(Request $request): Factory|View|Application
+    public function index(Request $request): Factory|View|Application
     {
-        $queryParams = [];
+        $queryParam = [];
         $search = $request['search'];
-        $requestStatus = $request['request_status'];
+        $requestStatus =  $request->has('request_status') ? $request['request_status'] : 'all';;
 
         $method = $request->withdrawal_method;
         $withdrawRequests = $this->withdrawRequest->with('user', 'withdrawal_method')
@@ -65,97 +68,69 @@ class WithdrawController extends Controller
                 return $query->where('withdrawal_method_id', $request->withdrawal_method);
             });
 
-        $queryParams = ['search' => $request['search'], 'request_status' => $request['request_status']];
-        $withdrawRequests = $withdrawRequests->where('user_id', auth()->user()->id)->latest()->paginate(Helpers::pagination_limit())->appends($queryParams);
+        $queryParam = ['search' => $request['search'], 'request_status' => $request['request_status']];
+        $withdrawRequests = $withdrawRequests->latest()->paginate(Helpers::pagination_limit())->appends($queryParam);
         $withdrawalMethods = $this->withdrawalMethod->latest()->get();
 
-        return view('organization-views.withdraw.list', compact('withdrawRequests', 'withdrawalMethods', 'method', 'search', 'requestStatus'));
-    }
-
-    /**
-     * @return Application|Factory|View
-     */
-    public function withdrawRequests(): Factory|View|Application
-    {
-        $withdrawalMethods = $this->withdrawalMethod->latest()->get();
-        $organizationEmoney = $this->eMoney->where(['user_id' => auth()->user()->id])->first();
-        $maximumAmount = $organizationEmoney->current_balance;
-        return view('organization-views.withdraw.index', compact('withdrawalMethods', 'maximumAmount'));
+        return view('organization-views.withdraw.index', compact('withdrawRequests', 'withdrawalMethods', 'method', 'search', 'requestStatus'));
     }
 
     /**
      * @param Request $request
      * @return RedirectResponse
      */
-    public function withdrawRequestStore(Request $request): RedirectResponse
+    public function status_update(Request $request): RedirectResponse
     {
         $request->validate([
-            'amount' => 'required|min:0|not_in:0',
-            'note' => 'max:255',
-            'withdrawal_method_id' => 'required',
-        ],[
-            'amount.not_in' => translate('Amount must be greater than zero!'),
+            'request_id' => 'required',
+            'request_status' => 'required|in:approve,deny',
         ]);
 
-        $withdrawalMethod = $this->withdrawalMethod->find($request->withdrawal_method_id);
-        $fields = array_column($withdrawalMethod->method_fields, 'input_name');
-        $values = $request->all();
-        $data = [];
+        $withdrawRequest = $this->withdrawRequest->with(['user'])->find($request['request_id']);
 
-        foreach ($fields as $field) {
-            if(key_exists($field, $values)) {
-                $data[$field] = $values[$field];
-            }
+        if (!isset($withdrawRequest->user)) {
+            Toastr::error(translate('The request sender is unavailable'));
+            return back();
         }
 
-        $amount = $request->amount;
-        $charge = 0;
-        $totalAmount = $amount + $charge;
+        if ($request->request_status == 'deny'){
+            $account = $this->eMoney->where(['user_id' => $withdrawRequest->user->id])->first();
+            $account->pending_balance -= ($withdrawRequest['amount'] + $withdrawRequest['admin_charge']);
+            $account->current_balance += ($withdrawRequest['amount'] + $withdrawRequest['admin_charge']);
+            $account->save();
 
-        try {
-            DB::beginTransaction();
-
-            $withdrawRequest = $this->withdrawRequest;
-            $withdrawRequest->user_id = auth()->user()->id;
-            $withdrawRequest->amount = $amount;
-            $withdrawRequest->admin_charge = $charge;
-            $withdrawRequest->request_status = 'pending';
+            $withdrawRequest->request_status = $request->request_status == 'deny' ? 'denied' : 'approved' ;
             $withdrawRequest->is_paid = 0;
-            $withdrawRequest->sender_note = $request->sender_note;
-            $withdrawRequest->withdrawal_method_id = $request->withdrawal_method_id;
-            $withdrawRequest->withdrawal_method_fields = $data;
+            $withdrawRequest->admin_note = $request->admin_note ?? null;
             $withdrawRequest->save();
+        }
 
-            $organizationEmoney = $this->eMoney->where('user_id', auth()->user()->id)->first();
-
-            if ($organizationEmoney->current_balance < $totalAmount) {
-                Toastr::warning(translate('Your account do not have enough balance.'));
+        if ($request->request_status == 'approve')
+        {
+            $admin = $this->user->with(['emoney'])->where('type', 0)->first();
+            if ($admin->emoney->current_balance < ($withdrawRequest['amount'] + $withdrawRequest['admin_charge'])) {
+                Toastr::warning(translate('You do not have enough balance. Please generate eMoney first.'));
                 return back();
             }
 
-            $organizationEmoney->current_balance -= $totalAmount;
-            $organizationEmoney->pending_balance += $totalAmount;
-            $organizationEmoney->save();
+            $this->accept_withdraw_transaction($withdrawRequest->user_id, $withdrawRequest['amount'], $withdrawRequest['admin_charge']);
 
-            DB::commit();
-
-            Toastr::success(translate('Withdraw request send !'));
-            return redirect()->route('organization.withdraw.list');
-        } catch (\Exception $e) {
-            DB::rollback();
-            Toastr::warning(translate('Withdraw request send failed!'));
-            return back();
+            $withdrawRequest->request_status = $request->request_status == 'approve' ? 'approved' : 'denied';
+            $withdrawRequest->is_paid = 1;
+            $withdrawRequest->admin_note = $request->admin_note ?? null;
+            $withdrawRequest->save();
         }
-    }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function withdrawMethod(Request $request): JsonResponse
-    {
-        $method = $this->withdrawalMethod->where(['id' => $request->withdrawal_method_id])->first();
-        return response()->json($method, 200);
+        $data = [
+            'title' => $request->request_status == 'approve' ? translate('Withdraw_request_accepted') : translate('Withdraw_request_denied'),
+            'description' => '',
+            'image' => '',
+            'order_id'=>'',
+        ];
+        send_push_notification_to_device($withdrawRequest->user->fcm_token, $data);
+
+        Toastr::success(translate('The request has been successfully updated'));
+        return back();
     }
 
     /**
@@ -169,6 +144,7 @@ class WithdrawController extends Controller
     public function download(Request $request): StreamedResponse|string
     {
         $withdrawRequests = $this->withdrawRequest
+            ->with('user', 'withdrawal_method')
             ->when($request->has('search'), function ($query) use ($request) {
                 $key = explode(' ', $request['search']);
 
@@ -184,31 +160,32 @@ class WithdrawController extends Controller
 
                 return $query->whereIn('user_id', $userIds);
             })
-            ->with('user', 'withdrawal_method')
+            ->when($request->has('request_status') && $request->request_status != 'all', function ($query) use ($request) {
+                return $query->where('request_status', $request->request_status);
+            })
             ->when($request->has('withdrawal_method') && $request->withdrawal_method != 'all', function ($query) use ($request) {
                 return $query->where('withdrawal_method_id', $request->withdrawal_method);
-            })
-            ->where('user_id', auth()->user()->id)
-            ->get();
+            })->get();
 
         $storage = [];
 
         foreach ($withdrawRequests as $key=>$withdrawRequest) {
-            if (!is_null($withdrawRequest->user) && !is_null($withdrawRequest->withdrawal_method_fields)) {
+                $field_string = null;
+                foreach($withdrawRequest->withdrawal_method_fields as $key2=>$item) {
+                    $field_string .= $key2 . ':' . $item . ', ';
+                }
                 $data = [
-                    'No' => $key+1,
-                    'UserName' => $withdrawRequest->user->f_name . ' ' . $withdrawRequest->user->l_name,
-                    'UserPhone' => $withdrawRequest->user->phone,
-                    'UserEmail' => $withdrawRequest->user->email,
-                    'MethodName' => $withdrawRequest->withdrawal_method->method_name??'',
-                    'Amount' => $withdrawRequest->amount,
-                    'RequestStatus' => $withdrawRequest->request_status,
+                    translate('No') => $key+1,
+                    translate('UserName') => $withdrawRequest->user?->f_name . ' ' . $withdrawRequest->user?->l_name,
+                    translate('UserPhone') => $withdrawRequest->user?->phone,
+                    translate('UserEmail') => $withdrawRequest->user?->email,
+                    translate('MethodName') => $withdrawRequest->withdrawal_method?->method_name??'',
+                    translate('Amount') => $withdrawRequest->amount,
+                    translate('Request Status') => $withdrawRequest->request_status,
+                    translate('Withdrawal Method Fields') => $field_string
                 ];
-
-                $storage[] = array_merge($data, $withdrawRequest->withdrawal_method_fields);
+                $storage[] = $data;
             }
-        }
-
         return (new FastExcel($storage))->download(time() . '-file.xlsx');
     }
 }

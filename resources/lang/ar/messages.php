@@ -1132,4 +1132,6 @@
   'addon' => 'Addon',
   'system_Addon' => 'System Addon',
   'System Addon' => 'System Addon',
+  'Organization' => 'Organization',
+  'request_money' => 'Request money',
 );

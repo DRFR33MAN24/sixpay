@@ -37,7 +37,78 @@
                             </span>
                         </a>
                     </li>
-                    <li class="navbar-vertical-aside-has-menu {{Request::is('organization/transaction')?'show':''}}">
+                    <li class="nav-item">
+                        <small class="nav-subtitle"
+                               title="{{translate('account')}} {{translate('section')}}">{{translate('account')}} {{translate('management')}}</small>
+                        <small class="tio-more-horizontal nav-subtitle-replacer"></small>
+                    </li>
+                    <li class="navbar-vertical-aside-has-menu {{Request::is('organization/transfer*')?'active':''}}">
+                        <a class="nav-link " href="{{route('organization.transfer.index')}}"
+                           title="{{translate('transfer')}}">
+                            <i class="tio-users-switch nav-icon"></i>
+                            <span class="text-truncate">{{translate('Transfer')}}</span>
+                        </a>
+                    </li>
+
+                    <li class="navbar-vertical-aside-has-menu {{Request::is('organization/transaction/index')?'active':''}}">
+                        <a class="nav-link " href="{{route('organization.transaction.index', ['trx_type'=>'all'])}}"
+                           title="{{translate('transaction')}}">
+                            <i class="tio-money-vs nav-icon"></i>
+                            <span class="text-truncate">{{translate('Transactions')}}</span>
+                        </a>
+                    </li>
+
+                    <li class="navbar-vertical-aside-has-menu {{Request::is('organization/expense/index')?'active':''}}">
+                        <a class="nav-link " href="{{route('organization.expense.index')}}"
+                           title="{{translate('Expense Transactions')}}">
+                            <i class="tio-receipt-outlined nav-icon"></i>
+                            <span class="text-truncate">{{translate('Expense Transactions')}}</span>
+                        </a>
+                    </li>
+                    <li class="navbar-vertical-aside-has-menu {{Request::is('organization/withdraw/requests')?'active':''}}">
+                        <a class="nav-link " href="{{route('organization.withdraw.requests', ['request_status'=>'all'])}}"
+                           title="{{translate('Agent Request Money')}}">
+                            <i class="tio-pound-outlined nav-icon"></i>
+                            <span class="text-truncate">{{translate('Withdraw_Requests')}}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <small class="nav-subtitle"
+                               title="{{translate('user')}} {{translate('section')}}">{{translate('user')}} {{translate('management')}}</small>
+                        <small class="tio-more-horizontal nav-subtitle-replacer"></small>
+                    </li>
+                    <li class="navbar-vertical-aside-has-menu {{Request::is('organization/customer*')?'active':''}}">
+                        <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:"
+                        >
+                            <i class="tio-group-senior nav-icon"></i>
+                            <span
+                                class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('customer')}}</span>
+                        </a>
+                        <ul class="js-navbar-vertical-aside-submenu nav nav-sub" style="display: {{Request::is('organization/customer*')?'block':'none'}}">
+                            <li class="navbar-vertical-aside-has-menu {{Request::is('organization/customer/add')?'active':''}}">
+                                <a class="nav-link " href="{{route('organization.customer.add')}}"
+                                   title="{{translate('add')}}">
+                                    <span class="tio-circle nav-indicator-icon"></span>
+                                    <span class="text-truncate">{{translate('register')}}</span>
+                                </a>
+                            </li>
+                            <li class="navbar-vertical-aside-has-menu {{Request::is('organization/customer/list')?'active':''}}">
+                                <a class="nav-link " href="{{route('organization.customer.list')}}"
+                                   title="{{translate('list')}}">
+                                    <span class="tio-circle nav-indicator-icon"></span>
+                                    <span class="text-truncate">{{translate('list')}}</span>
+                                </a>
+                            </li>
+                            <li class="navbar-vertical-aside-has-menu {{Request::is('organization/customer/kyc-requests')?'active':''}}">
+                                <a class="nav-link " href="{{route('organization.customer.kyc_requests')}}"
+                                   title="{{translate('Verification Requests')}}">
+                                    <span class="tio-circle nav-indicator-icon"></span>
+                                    <span class="text-truncate">{{translate('Verification Requests')}}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- <li class="navbar-vertical-aside-has-menu {{Request::is('organization/transaction')?'show':''}}">
                         <a class="js-navbar-vertical-aside-menu-link nav-link"
                            href="{{route('organization.transaction', ['trx_type'=>'all'])}}"
                            title="{{translate('dashboard')}}">
@@ -46,8 +117,8 @@
                                 {{translate('transaction')}}
                             </span>
                         </a>
-                    </li>
-                    <li class="navbar-vertical-aside-has-menu {{Request::is('organization/withdraw*')?'active':''}}">
+                    </li> -->
+                    <!-- <li class="navbar-vertical-aside-has-menu {{Request::is('organization/withdraw*')?'active':''}}">
                         <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:"
                         >
                             <i class="tio-settings nav-icon"></i>
@@ -73,7 +144,7 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>
+                    </li> -->
 <!-- 
                     <li class="navbar-vertical-aside-has-menu {{Request::is('organization/business-settings*')?'active':''}} mb-4">
                         <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:"

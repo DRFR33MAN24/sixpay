@@ -1780,4 +1780,5 @@
   'Tag updated successfully!' => 'Tag updated successfully!',
   'Tag created successfully!' => 'Tag created successfully!',
   'Tag deleted successfully!' => 'Tag deleted successfully!',
+  'purpose' => 'Purpose',
 );
